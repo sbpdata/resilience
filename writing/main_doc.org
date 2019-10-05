@@ -1,0 +1,24 @@
+#+TITLE: Resilience (DRAFT)
+#+AUTHOR: S B Post
+#+DATE: Oct 2019
+#+Options: toc:2 H:3 num:2
+#+LATEX_HEADER: \usepackage{natbib}
+
+\newpage
+
+* Concept
+Resilience has gotten a reputation of an academic 'buzzword of the times', which seems to have led --- much in the vein of sustainability of the 90s, it seems nigh impossible to write a paper without an introduction that first laments the vagueness of the term, its 'buzziness',  and suggests a clarification. So too here. 
+
+We can think of the resilience concept in terms of the three questions popularized by cite:carpenter_metaphor_2001:
+ - resilience to what?
+ - resilience by what?
+ - resilience  
+
+Unfortunately, metaphors do not make for good operational instruments. 
+
+* References
+
+bibliographystyle:apalike
+bibliography:./referenced.bib
+
+
