@@ -1,0 +1,219 @@
+---
+title: "Cleaning producedure for SITC trade data" 
+author: Søren Post
+---
+
+# Data
+
+Data is distributed by the MITs observatory of economic complexity. The trade data is classified according to the SITC, revision 2 on the 4-digit level. The data-download page can be found here: https://oec.world/en/resources/data/.
+
+```{R}
+library(tidyverse)
+
+sitc_path <- "~/sorensfolder/sbpdata/data/trade/sitc-rev2/year_origin_sitc_rev2.tsv"
+sitc_raw <- read_tsv(sitc_path)
+
+sitc <- sitc_raw %>%
+	mutate(
+        export_val = as.numeric(export_val),
+        export_rca = as.numeric(export_rca)
+    ) %>%
+	select(
+        time = year,
+        region = origin,
+        unit = sitc4,
+        intensity = export_val
+    )
+```
+
+# Time independent filters
+
+Following the Atlas of Economic complexity, four time-independent filters are used to filter the SITC-data.
+
+The filters are: 
+ - countries must have data in 2010
+ - countries must have a total export value > 1 bill in 2010
+ - countries must have a population of at least 1.25 mio in 2010
+ - countries must not be Tchad (TCD), Iraq (IRQ), Afghanistan (AFG)
+
+```{R}
+ref_year <- 2010
+ref_export <- 1000000000
+ref_pop <- 1250000
+ref_reliable <- c("afg", "tcd", "irq")
+```
+
+## Availability filter
+
+I first create a set of countries that have data available in the reference year. This removes no-longer present countries, which helps for continuity in the time-series, but is a bit of an issue in earlier periods, given the prominence of fx the Soviet Union. 
+
+```{R}
+available_set <- filter(sitc, time == ref_year) %>%
+    pull(region) %>%
+    unique()
+```
+
+## Export filter
+
+To create the set of countries that clear the export filter, I use the trade data itself. 
+
+```{R}
+export_set <- sitc %>% 
+	filter(time == ref_year) %>%
+	group_by(region) %>%
+	summarise(
+        total_export = sum(intensity)
+    ) %>%
+	filter(total_export >= ref_export) %>%
+	pull(region) %>%
+    unique()
+```
+
+## Population filter
+
+I use the World Development Indicators (WDI) population data to filter for minimum population in the reference year. The WDI distributes a package of the same name, from which I download the data.
+
+```{R}
+library(WDI)
+
+pop_raw <- WDI(country = "all", indicator = "SP.POP.TOTL", extra = TRUE) %>%
+	as_tibble()
+
+pop_data <- pop_raw %>% 
+	mutate_if(is.factor, as.character) %>%
+	mutate(
+        region = str_to_lower(iso3c)
+    ) %>%
+	select(
+        time = year, 
+        region,
+        pop = SP.POP.TOTL
+    )
+
+pop_set <- pop_data %>%
+	filter(time == ref_year & pop >= ref_pop) %>%
+	pull(region) %>%
+    unique()
+```
+
+## Reliability filter
+
+The Atlas lists a few countries with unreliable trade data. I exclude these countries. 
+
+```{R}
+reliable_set <- sitc %>%
+	filter(!(region %in% ref_reliable)) %>%
+	pull(region) %>%
+	unique()
+```
+
+## Apply filters
+
+I now apply the above filters.
+
+```{R}
+sitc_filtered <- sitc %>%
+	filter(region %in% export_set) %>%
+	filter(region %in% pop_set) %>% 
+	filter(region %in% available_set) %>%
+	filter(region %in% reliable_set) 
+```
+
+There are a few NA values in intensity (export value) and RCA. These are a remnant from coercing a "NULL" value in the original dataset. I set all NA values to 0.
+
+```{R}
+sitc_filtered[is.na(sitc_filtered)] <- 0
+```
+
+## Complete panel
+
+For each year, I want every single country to have an observation for each product. If the product did not export the product at all, this is simply put to 0. After completing each year, NAs are introduced for each observation that were not present before. I set these NA values to 0.
+
+```{R}
+sitc_tidy <- sitc_filtered %>% 
+	group_by(time) %>%  
+	complete(region, unit)
+
+sitc_tidy[is.na(sitc_tidy)] <- 0
+```
+
+## Write file
+```{R}
+output_path <- "~/sorensfolder/sbpdata/data/sitc2_4digit_time_ind_filter.csv"
+write_csv(sitc_tidy, output_path)
+```
+
+# Time dependent filters
+
+Albaeik et al ("Improving the Economic Complexity Index", 2017) uses three time-dependent filters, in addition to the time-independent filters above. These three filters are:
+
+ - exclusion of products for which, in a given year, 80% of countries have an export value of 0. 
+ - exclusion of countries that, in a given year, have an export value of 0 for 95% of products
+ - exclusion of products with a global export value of less than 10 mio in a given year
+ - lastly, all country-product export values of less than 5000 are set to 0.
+
+```{R}
+product_prop_limit <- 0.80
+region_prop_limit <- 0.95
+product_export_min <- 10000000
+```
+
+## First time-dependent filter
+
+```{R}
+product_summary <- sitc_tidy %>%
+    group_by(time, unit) %>%
+    summarise(
+        regions_with_0_export = sum(intensity == 0),
+        total_regions = n(),
+        proportion_0 = regions_with_0_export / total_regions
+    )
+
+unit_year_exclusions <- product_summary %>%
+    filter(proportion_0 >= product_prop_limit)
+```
+
+## Second time-dependent filter
+
+```{R}
+region_summary <- sitc_tidy %>%
+    group_by(time, region) %>%
+    summarise(
+        units_with_0_export = sum(intensity == 0),
+        total_units = n(),
+        proportion_0 = units_with_0_export / total_units
+    )
+
+region_year_exclusions <- region_summary %>%
+    filter(proportion_0 >= region_prop_limit)
+```
+
+## Third time-dependent filter
+
+```{R}
+global_product_export_vals <- sitc_tidy %>%
+    group_by(time, unit) %>%
+    summarise(
+        total_export_val = sum(intensity)
+    )
+
+global_product_exclusions <- global_product_export_vals %>%
+    filter(total_export_val < product_export_min)
+```
+
+## Apply filters
+
+I remove excluded observations (i.e. region-unit pairs) by using anti-join. anti-join(x, y) keeps all columns from x, and all the observations from x that does not have a match in y.
+
+```{R}
+sitc_filtered2 <- anti_join(sitc_tidy, unit_year_exclusions) %>%
+    anti_join(region_year_exclusions) %>%
+    anti_join(global_product_exclusions) 
+```
+
+## Write file
+
+```{R}
+output_path <- "~/sorensfolder/sbpdata/data/sitc2_4digit_both_filters.csv"
+write_csv(sitc_filtered2, output_path)
+```
