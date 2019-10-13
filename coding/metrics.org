@@ -1,144 +1,280 @@
-#+TITLE: Metrics, Resilience
+#+TITLE: Complexity, Resilience: Concepts, coding
 #+AUTHOR: S B Post
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup
 #+Options: toc:2 H:3 num:2
 #+LATEX_HEADER: \usepackage{natbib}
 #+LaTeX_HEADER: \documentclass[11pt,twoside,a4paper]{report}
 #+LaTeX_HEADER: \setlength{\parskip}{1em}
 
-\newpage
+* Data: cleaning, considerations
+* Metrics
+** Product presence: RCA
+ Economies differ by sizes of many magnitudes. For instance, the economy of the US is around 19 trillions USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (also known as the Balassa Index). Originally introduced by cite:balassa_trade_1965.
 
-* Product presence: RCA
-Economies differ by sizes of many magnitudes. For instance, the economy of the US is around 19 trillions USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (also known as the Balassa Index). Originally introduced by cite:balassa_trade_1965.
+ RCA compares the share of a products export value in a regions total export to the share of the products global export value in the total global exports. More formally:
 
-RCA compares the share of a products export value in a regions total export to the share of the products global export value in the total global exports. More formally:
+ $$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
 
-$$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
+ where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year. If RCA is at 1 or above, a comparative advantage is considered revealed.
 
-where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year. If RCA is at 1 or above, a comparative advantage is considered revealed.
+*** Coding RCA
+    :PROPERTIES:
+    :header-args:R: :session rca_and_rel :exports code
+    :END:
 
-** Coding RCA
-  :PROPERTIES:
-  :header-args:R: :session rca :results silent
-  :END:
+ For data I use the cleaned trade data in SITC rev. 2 format (four digit). I only use data for the year 2010.
 
-For data I use the cleaned trade data in SITC rev. 2 format (four digit). I only use data for the year 2010.
+    #+begin_src R 
+      library(tidyverse)
+      library(vroom)
+      ## read data
+      path <- "~/sorensfolder/sbpdata/data/sitc-rev2_tidy.csv"
+      trade <- vroom(path) %>%
+        filter(time == 2010) %>%
+        select(-rca)
+    #+end_src
 
-   #+begin_src R 
-     library(tidyverse)
-     library(vroom)
-     ## read data
-     path <- "~/sorensfolder/sbpdata/data/sitc-rev2_tidy.csv"
-     trade <- vroom(path) %>%
-       filter(time == 2010) %>%
-       select(-rca)
-   #+end_src
+    #+RESULTS:
 
-First, I build a country-product matrix, where the elements are the export-value in constant dollars.
+ As written above, the definition of RCA is as follows: 
 
-   #+begin_src R 
-     mat <- spread(trade, key = unit, value = intensity) %>%
-       select(-time) %>%
-       column_to_rownames(var = "region") %>%
-       as.matrix()
-   #+end_src
+ $$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
 
-I calculate RCA values in three steps. First I find the share of a products export value in a country's total exports (the numerator) for each product.
+ First, I build a country-product matrix, where the elements are the export-value in constant dollars. This matrix is the $X$ matrix. Each element $x_{cp}$ is the intensity, i.e. the export value, of the country-product pair.
 
-#+begin_src R
-  share_unit_region <- mat / rowSums(mat)
-#+end_src
+    #+begin_src R 
+      mat <- spread(trade, key = unit, value = intensity) %>%
+        select(-time) %>%
+        column_to_rownames(var = "region") %>%
+        as.matrix()
+    #+end_src
 
-The ~rowSums~ sums the product export values for each country. This results in a vector with each country's total export value. This is then divided into the intensity matrix, element-wise. It is repeated column by column, meaning that each product is divided by respective country's total export. 
-
-Second I find the share of each products export value in the total value of global exports (denominator).
-
-#+begin_src R
-  share_unit_global <- colSums(mat) / sum(mat)
-#+end_src
-
-This is essentially the same procedure as before, but with the column sums (a vector containing the total value of a products exports over all countries) divided by a vector (global exports).
-
-Finally, I perform the division. This is essentially that same idea as step one. I transpose the nominator-matrix in order for R 
+ I calculate RCA values in three steps. First I find the share of a products export value in a country's total exports (the numerator) for each product.
 
  #+begin_src R
-   incidence_mat <- t(
-       t(share_unit_region) / share_unit_global
-   )
+   share_unit_region <- mat / rowSums(mat)
  #+end_src
 
- \newpage
+ The ~rowSums~ sums the product export values for each country. This results in a vector with each country's total export value. This is then divided into the intensity matrix, element-wise. It is repeated column by column, meaning that each product is divided by respective country's total export. 
 
-* Similarity between products: Proximity, Association Strength
-I use two metrics to approximate the capability overlap between products: proximity and association strength. Proximity is widely used in the literature, and refers to the smallest of the two conditional probabilities of two products having an RCA value of at least 1 in the same country. Association strength is the ratio between how often the two products actually co-occur versus how often we would statistically expect them to co-occur.
+ Second I find the share of each products export value in the total value of global exports (denominator).
 
-Let $M$ be a binary matrix, where rows are countries and columns are products. If country c has a revealed comparative advantage in product p, $M_{cp}$ has a value of 1. If not, $M_{cp}$ has a value of 0. For all the products that have the value 1 for a county, we say that the products 'occurs' in the country. 
+ #+begin_src R
+   share_unit_global <- colSums(mat) / sum(mat)
+ #+end_src
 
-We can think of each product as having a set of countries in which the product occurs. That is, each column of $M$ constitutes a set. The set for product $i$ is denoted $P_i$. If two products $i$ and $j$ has the same country in their respective sets, they co-occur in this country. The similarity between two products is based on how much the co-occur.
+ This is essentially the same procedure as before, but with the column sums (a vector containing the total value of a products exports over all countries) divided by a vector (global exports).
 
-Let $C$ be a co-occurrence matrix between products: $MM^T = C$
+ Finally, I perform the division. This is essentially that same idea as step one. I transpose the nominator-matrix in order for R to divide the vector global product shares element-wise one column at a time. Finally I transpose the result to get the country-product format for the RCA matrix.
 
-Each element in $C$ is the number of co-occurrences between the row product and the column product. That is, 
+  #+begin_src R
+    incidence_mat <- t(
+        t(share_unit_region) / share_unit_global
+    )
+  #+end_src
 
-$$ C = (c_{ij}) \in \mathbb{R}^{n \times n} \text{, where } c_{ij} = |U_i \cap U_j|$$ 
+ For most of the calculations, the RCA matrix needs to be binary. 
 
-Let then a vector $\vec{v}$ have the cardinality for each products set: $\vec{v} = \begin{bmatrix} v_1 & v_2 & \dots & v_m \end{bmatrix}$, where $v_m = |U_m|$.
+ #+begin_src R
+   binary_incidence_mat <- ifelse(incidence_mat >= 1, 1, 0)
+ #+end_src
 
-So, $v_i$ is the number of countries that export product $i$ with an RCA value of at least 1 and $c_{ij}$ is the number countries that export both product $i$ and product $j$ with a comparative advantage.
+ The first 10 rows and 5 columns of the country-product RCA matrix, later defined as M is as follows:
 
-Now we can define the association strength between the two products $i$ and $j$ as: 
+ #+begin_src R :exports both :results output
+   incidence_mat[1:10, 1:5]
+ #+end_src
 
-\begin{equation}
-\text{AS}(i,j) = \frac{|U_i \cap U_j|}{|U_i||U_j|} =\frac{c_{ij}}{v_iv_j}
-\end{equation}
+ #+RESULTS:
+ #+begin_example
+             0011        0012        0013         0014         0015
+ ago 3.050055e-05  0.00000000 0.000000000 0.0000000000 0.0000000000
+ alb 0.000000e+00  0.00000000 0.000000000 0.0000000000 0.0000000000
+ are 6.714986e-03  0.17528790 0.000000000 0.0036199581 3.1081353220
+ arg 4.465448e-02  0.03266859 0.000000000 0.1053968602 2.9301535236
+ aus 7.589987e+00 18.73346642 0.004396553 0.1722491720 3.6800952314
+ aut 1.336828e+00  0.12767172 0.293910495 0.8424285365 0.2569530733
+ aze 0.000000e+00  0.00000000 0.000000000 0.0000000000 0.0115261215
+ bel 7.385417e-01  0.02118707 1.642952207 0.7455334227 1.2711332964
+ bgd 0.000000e+00  0.00000000 0.000000000 0.0009123757 0.0004335134
+ bgr 1.532127e+00 11.48713041 0.009548073 2.4288072151 0.5214828390
+ #+end_example
 
-Similarly we can define the proximity between the two products $i$ and $j$ as:
-\begin{equation}
-\text{Pr}(i,j) = \text{min}\{P(U_i|U_j),\text{ }P(U_j, U_j) \} = \frac{c_{ij}}{\text{max}\{v_{i} \text{, }v_{j}\}}
-\end{equation}
+ And the corresponding binary matrix:
 
-** Coding
+ #+begin_src R :exports both :results output
+   binary_incidence_mat[1:10, 1:5]
+ #+end_src
 
+ #+RESULTS:
+ #+begin_example
+     0011 0012 0013 0014 0015
+ ago    0    0    0    0    0
+ alb    0    0    0    0    0
+ are    0    0    0    0    1
+ arg    0    0    0    0    1
+ aus    1    1    0    0    1
+ aut    1    0    0    0    0
+ aze    0    0    0    0    0
+ bel    0    0    1    0    1
+ bgd    0    0    0    0    0
+ bgr    1    1    0    1    0
+ #+end_example
 
-\newpage
+** Similarity between products: Proximity, Association Strength
+ I use two metrics to approximate the capability overlap between products: proximity and association strength. Proximity is widely used in the literature, and refers to the smallest of the two conditional probabilities of two products having an RCA value of at least 1 in the same country. Association strength is the ratio between how often the two products actually co-occur versus how often we would statistically expect them to co-occur. Proximity is sourced from cite:hidalgo_product_2007 (and much of the subsequent literature on economic complexity), while association strength is from cite:eck_how_2009 (and the scientometrics literature).
 
-* Distance between countries and products
-If we assume that countries that specialize (RCA) in products have the capabilities to export them, and that similar products have overlapping capabilities, we can also infer information between countries and products.
+ Let $M$ be a binary matrix, where rows are countries and columns are products. If country c has a revealed comparative advantage in product p, $M_{cp}$ has a value of 1. If not, $M_{cp}$ has a value of 0. For all the products that have the value 1 for a county, we say that the products 'occurs' in the country. 
 
-In the literature, density/distance is the most often used metric to quantify how "close" the capability base of a country is to the requirments of a product. 
+ We can think of each product as having a set of countries in which the product occurs. That is, each column of $M$ constitutes a set. The set for product $i$ is denoted $P_i$. If two products $i$ and $j$ has the same country in their respective sets, they co-occur in this country. The similarity between two products is based on how much the co-occur.
 
-Density of a country $c$ around a product $p$ is defined as the ratio between the sum of the pairwise proximity values between all the products exported by country $c$ and the product $p$ and the sum of all products pairwise proximity values to $p$ (excluding itself). When this value is subtracted from 1, the metric is called distance. Instead of proximity, any similarity metric can be used. More formally:
+ Let $C$ be a co-occurrence matrix between products: $MM^T = C$. 
 
-$$
-\text{Dens}_{j}^{c} = \frac{ \sum_{i} m_{ci} \text{Pr}(ij) }{ \sum_{i} \text{Pr}(ij) }
-$$
+ Each element in $C$ is the number of co-occurrences between the row product and the column product. That is, 
 
-where $\text{Dens}_{j}^{c}$ is the density of country $c$ around product $j$ and $m_{ci}$ is the i'th element in row $c$ of the $M$ matrix, i.e. 1 if the country has a revealed comparative advantage of at least 1 in product i, 0 if not.
+ $$ C = (c_{ij}) \in \mathbb{R}^{n \times n} \text{, where } c_{ij} = |U_i \cap U_j|$$ 
 
-\newpage
+ Let then a vector $\vec{v}$ have the cardinality for each products set: $\vec{v} = \begin{bmatrix} v_1 & v_2 & \dots & v_m \end{bmatrix}$, where $v_m = |U_m|$.
 
-* Coherence
+ So, $v_i$ is the number of countries that export product $i$ with an RCA value of at least 1 and $c_{ij}$ is the number countries that export both product $i$ and product $j$ with a comparative advantage.
 
-Density gives information on the relationship between a product and region. Coherence tells about how closely related a regions products are. That is, coherence is a property of a region. 
+ Now we can define the association strength between the two products $i$ and $j$ as: 
 
-Neffke et al (2018) defines the regional coherence in terms of employment-weighted capability match. The capability match is roughly their version of density, but from labor-flow based similarity values. Translated to the country-product space, this becomes:
+ \begin{equation}
+ \text{AS}(i,j) = \frac{|U_i \cap U_j|}{|U_i||U_j|} =\frac{c_{ij}}{v_iv_j}
+ \end{equation}
 
-[ NEDESTÅENDE ER IKKE RIGTIGT ]
+ Similarly we can define the proximity between the two products $i$ and $j$ as:
+ \begin{equation}
+ \text{Pr}(i,j) = \text{min}\{P(U_i|U_j),\text{ }P(U_j, U_j) \} = \frac{c_{ij}}{\text{max}\{v_{i} \text{, }v_{j}\}}
+ \end{equation}
+
+*** Coding proximity
+    :PROPERTIES:
+    :header-args:R: :session rca_and_rel :exports code
+    :END:
+ The starting point is the RCA matrix M.
+
+ As above, I define proximity as: 
+
+ \begin{equation}
+ \text{Pr}(i,j) = \text{min}\{P(U_i|U_j),\text{ }P(U_j, U_j) \} = \frac{c_{ij}}{\text{max}\{v_{i} \text{, }v_{j}\}}
+ \end{equation}
+
+ First we need the co-occurrence matrix, ~cooc_ij~. This matrix is a product-product matrix, where element $c_{ij}$ is the number of times a country exports both product $i$ and product $j$.
+
+ #+begin_src R
+   ## set binary rca mat to mat
+   mat <- binary_incidence_mat
+   cooc_ij <- t(mat) %*% mat # co-occurrence matrix
+ #+end_src
+
+ Next I need to get a matrix containing the largest of each unit-pairs cardinality, the ~max_mat~. I get this matrix by first taking the column sums of M. This is just the number of occurrences of each product, $v$. I then build two matrices, each representing $i$ and $j$ for each pairwise comparison of largest cardinality. These matrices are just the vector $v$ put on top of each other as a row vector, or next to each other as a unit vector. I then go through the two matrices, one element at a time, selecting the largest of the two to the respective place in ~max_mat~. In other words, I check element 1, 1 in ~set_i~ and ~set_j~, and put the largest element in element 1, 1 in ~max_mat~. Next, I compare element 2, 1. And so on.
+
+ #+begin_src R
+     set_i <- colSums(mat)
+     set_j <- colSums(mat)
+
+     max_mat <- matrix(0L, nrow = length(set_i), ncol = length(set_i)) # empty matrix to populate.
+
+     set_i <- matrix(set_i, nrow = length(set_i), ncol = length(set_i), byrow = TRUE) # col 1 is A, col 2 is B, etc
+     set_j <- matrix(set_j, nrow = length(set_j), ncol = length(set_j), byrow = FALSE) # row 1 is A, row 2 is B, etc.
+
+     for(i in 1:nrow(set_i)){
+       for(j in 1:ncol(set_j)){
+         max_mat[i, j] <- max(set_i[i, j], set_j[i, j])
+       }
+     }
+ #+end_src
+
+ Now, I just need to perform the element wise division between the co-occurrence matrix and the maximum matrix. 
+
+ #+begin_src R
+   prox_mat <- cooc_ij / max_mat
+ #+end_src
+
+ Two final notes: 
+ 1) NAs can be introduced due to a division-by-zero error, if there are 0s in the denominator. That is, if there are some products that are not exported with a comparative advantage at all. This only occurs if no country exports the product in the year. This should not be an issue given the cleaning procedure.
+ 2) The diagonal of the proximity matrix is a products similarity to itself and is therefor always 1. This is not valuable information. I set the diagonal to 0. 
+
+ #+begin_src R
+ diag(prox_mat) <- 0
+ #+end_src
+
+ The final output is a product-product matrix with values between 0 and 1. Here are the first elements:
+
+ #+begin_src R :exports both :results output
+ prox_mat[1:10, 1:5] 
+ #+end_src
+
+*** Coding association strength
+    :PROPERTIES:
+    :header-args:R: :session rca_and_rel :exports code
+    :END:
+
+ The method for computing the association strength is very similar to the proximity values. The only difference is that instead of a loop populating a ~max_mat~, the matrices ~set_i~ and ~set_j~ are multiplied element-wise.
+
+ #+begin_src R 
+     cooc_ij <- t(mat) %*% mat # cooccurance matrix
+     set_i <- colSums(mat)
+     set_j <- colSums(mat)
+
+     set_i <- matrix(set_i, nrow = length(set_i), ncol = length(set_i), byrow = TRUE) # col 1 is A, col 2 is B, etc
+     set_j <- matrix(set_j, nrow = length(set_j), ncol = length(set_j), byrow = FALSE) # row 1 is A, row 2 is B, etc.
+
+     assoc_mat <- (cooc_ij) / (set_i * set_j) # calculate association strength
+ #+end_src
+
+ Again, the diagonal is set to 0. 
+
+ #+begin_src R
+ diag(assoc_mat) <- 0
+ #+end_src
+
+ The final output is a product-product matrix with values between 0 and 1. Here are the first elements:
+
+ #+begin_src R :exports both :results output
+ assoc_mat[1:10, 1:5] 
+ #+end_src
+
+** Distance between countries and products
+ If we assume that countries that specialize (RCA) in products have the capabilities to export them, and that similar products have overlapping capabilities, we can also infer information between countries and products.
+
+ In the literature, density/distance is the most often used metric to quantify how "close" the capability base of a country is to the requirments of a product. 
+
+ Density of a country $c$ around a product $p$ is defined as the ratio between the sum of the pairwise proximity values between all the products exported by country $c$ and the product $p$ and the sum of all products pairwise proximity values to $p$ (excluding itself). When this value is subtracted from 1, the metric is called distance. Instead of proximity, any similarity metric can be used. More formally:
+
+ $$
+ \text{Dens}_{j}^{c} = \frac{ \sum_{i} m_{ci} \text{Pr}(ij) }{ \sum_{i} \text{Pr}(ij) }
+ $$
+
+ where $\text{Dens}_{j}^{c}$ is the density of country $c$ around product $j$ and $m_{ci}$ is the i'th element in row $c$ of the $M$ matrix, i.e. 1 if the country has a revealed comparative advantage of at least 1 in product i, 0 if not.
+
+** Coherence
+
+ Density gives information on the relationship between a product and region. Coherence tells about how closely related a regions products are. That is, coherence is a property of a region. 
+
+ Neffke et al (2018) defines the regional coherence in terms of employment-weighted capability match. The capability match is roughly their version of density, but from labor-flow based similarity values. Translated to the country-product space, this becomes:
+
+ [ NEDESTÅENDE ER IKKE RIGTIGT ]
  
-$$ C^{t}_{c} = \sum_{i} \frac{ X_{ci}^{t} }{ \sum_{i} X_{ci}^{t} } Dens_{i}^{c} $$
+ $$ C^{t}_{c} = \sum_{i} \frac{ X_{ci}^{t} }{ \sum_{i} X_{ci}^{t} } Dens_{i}^{c} $$
 
-In other words, the coherence is the intensity weighted average density for the region around each product it exports with revealed comparative advantage.
+ In other words, the coherence is the intensity weighted average density for the region around each product it exports with revealed comparative advantage.
 
-\newpage
-
-* Industry change
-
-\newpage
-
-* Capability change
-
-\newpage
-
+** Industry change
+** Capability change
+* Figures
 * References
 
 bibliography:../writing/referenced.bib
 bibliographystyle:apalike
+* To do list
+** TODO NA check for RCA
+** TODO NA check for prox
+** TODO Relatedness: pro
+** TODO relatedness: assoc
+** TODO Density
+** TODO Coherence
+** TODO Figures 
+** TODO 
