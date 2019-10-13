@@ -1,0 +1,91 @@
+#+TITLE: Metrics, Resilience
+#+AUTHOR: S B Post
+#+Options: toc:2 H:3 num:2
+#+LATEX_HEADER: \usepackage{natbib}
+#+SETUPFILE: ~/sorensfolder/org/org-html-themes/setup/theme-readtheorg-local.setup
+
+\newpage
+
+* Product presence: RCA
+Economies differ by sizes of many magnitudes. For instance, the economy of the US is around 19 trillions USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (also known as the Balassa Index). 
+
+RCA compares the share of a products export value in a regions total export to the share of the products global export value in the total global exports. More formally:
+
+$$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
+
+where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year. If RCA is at 1 or above, a comparative advantage is considered revealed.
+
+** Coding RCA
+
+
+
+ \newpage
+
+* Similarity between products: Proximity, Association Strength
+I use two metrics to approximate the capability overlap between products: proximity and association strength. Proximity is widely used in the literature, and refers to the smallest of the two conditional probabilities of two products having an RCA value of at least 1 in the same country. Association strength is the ratio between how often the two products actually co-occur versus how often we would statistically expect them to co-occur.
+
+Let $M$ be a binary matrix, where rows are countries and columns are products. If country c has a revealed comparative advantage in product p, $M_{cp}$ has a value of 1. If not, $M_{cp}$ has a value of 0. For all the products that have the value 1 for a county, we say that the products 'occurs' in the country. 
+
+We can think of each product as having a set of countries in which the product occurs. That is, each column of $M$ constitutes a set. The set for product $i$ is denoted $P_i$. If two products $i$ and $j$ has the same country in their respective sets, they co-occur in this country. The similarity between two products is based on how much the co-occur.
+
+Let $C$ be a co-occurrence matrix between products:
+$$ MM^T = C $$
+
+Each element in $C$ is the number of co-occurrences between the row product and the column product. That is, $C = (c_{ij}) \in \mathbb{R}^{n \times n}$ where $c_{ij} = |U_i \cap U_j|$.
+
+Let then a vector $\vec{v}$ have the cardinality for each products set: $\vec{v} = \begin{bmatrix} v_1 & v_2 & \dots & v_m \end{bmatrix}$, where $v_m = |U_m|$.
+
+So, $v_i$ is the number of countries that export product $i$ with an RCA value of at least 1 and $c_{ij}$ is the number countries that export both product $i$ and product $j$ with a comparative advantage.
+
+Now we can define the association strength between the two products $i$ and $j$ as: 
+
+\begin{equation}
+\text{AS}(i,j) = \frac{|U_i \cap U_j|}{|U_i||U_j|} =\frac{c_{ij}}{v_iv_j}
+\end{equation}
+
+Similarly we can define the proximity between the two products $i$ and $j$ as:
+\begin{equation}
+\text{Pr}(i,j) = \text{min}\{P(U_i|U_j),\text{ }P(U_j, U_j) \} = \frac{c_{ij}}{\text{max}\{v_{i} \text{, }v_{j}\}}
+\end{equation}
+
+** Coding
+
+
+\newpage
+
+* Distance between countries and products
+If we assume that countries that specialize (RCA) in products have the capabilities to export them, and that similar products have overlapping capabilities, we can also infer information between countries and products.
+
+In the literature, density/distance is the most often used metric to quantify how "close" the capability base of a country is to the requirments of a product. 
+
+Density of a country $c$ around a product $p$ is defined as the ratio between the sum of the pairwise proximity values between all the products exported by country $c$ and the product $p$ and the sum of all products pairwise proximity values to $p$ (excluding itself). When this value is subtracted from 1, the metric is called distance. Instead of proximity, any similarity metric can be used. More formally:
+
+$$
+\text{Dens}_{j}^{c} = \frac{ \sum_{i} m_{ci} \text{Pr}(ij) }{ \sum_{i} \text{Pr}(ij) }
+$$
+
+where $\text{Dens}_{j}^{c}$ is the density of country $c$ around product $j$ and $m_{ci}$ is the i'th element in row $c$ of the $M$ matrix, i.e. 1 if the country has a revealed comparative advantage of at least 1 in product i, 0 if not.
+
+\newpage
+
+* Coherence
+
+Density gives information on the relationship between a product and region. Coherence tells about how closely related a regions products are. That is, coherence is a property of a region. 
+
+Neffke et al (2018) defines the regional coherence in terms of employment-weighted capability match. The capability match is roughly their version of density, but from labor-flow based similarity values. Translated to the country-product space, this becomes:
+
+[ NEDESTÅENDE ER IKKE RIGTIGT ]
+ 
+$$ C^{t}_{c} = \sum_{i} \frac{ X_{ci}^{t} }{ \sum_{i} X_{ci}^{t} } Dens_{i}^{c} $$
+
+In other words, the coherence is the intensity weighted average density for the region around each product it exports with revealed comparative advantage.
+
+\newpage
+
+* Industry change
+
+\newpage
+
+* Capability change
+
+\newpage

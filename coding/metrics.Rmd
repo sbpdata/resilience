@@ -1,0 +1,25 @@
+---
+title: "Metric development"
+author: "S B Post"
+---
+
+# Industry presence: RCA
+Economies differ by sizes of many magnitudes. For instance, the economy of the US is around 19 trillions USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (also known as the Balassa Index). 
+
+RCA compares the share of a products export value in a regions total export to the share of the products global export value in the total global exports. More formally:
+
+$$ RCA_{pc} = \frac{ E_{cp} }{ \sum_{p} E_{cp} } \bigg/ \frac{ \sum_{c} E_{cp} }{ \sum_{c} \sum_{p} E_{cp}} $$
+
+where $E_{cp}$ is the export value of product $p$ in country $c$ in a given year.
+
+# Relatedness: Proximity, Association Strength
+I use two metrics to approximate the capability overlap between products: proximity and association strength. Proximity is widely used in the literature, while I prefer the properties of association strength. 
+
+
+
+# Industry coherence
+
+# Industry change
+
+# Capability change
+Neffke
