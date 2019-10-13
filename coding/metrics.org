@@ -17,8 +17,6 @@ where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year
 
 ** Coding RCA
 
-
-
  \newpage
 
 * Similarity between products: Proximity, Association Strength
