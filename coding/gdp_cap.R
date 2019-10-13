@@ -16,7 +16,7 @@ library(WDI)
 maddison_path = "https://www.rug.nl/ggdc/historicaldevelopment/maddison/data/mpd2018.dta"
 
 ## OUTPUT PATH
-output_dir <- here("../data/joined_gdp_cap.csv")
+output_dir <- here("/data/joined_gdp_cap.csv")
 
 ################
 ### WDI data ###
@@ -76,9 +76,8 @@ joined$iso_new <- countrycode(sourcevar = joined$isocode,
 joined_clean <- joined %>%
 	drop_na(iso_new)
 
-# Only notable dropped is Kosovo. Nort
 dropped_obs <- joined %>% 
 	filter(isocode %in% setdiff(unique(joined$isocode), unique(joined$iso_new))) %>% pull(isocode) %>%
 	unique()
 
-write_csv(joined, output_dir)
+write_csv(joined_clean, output_dir)
