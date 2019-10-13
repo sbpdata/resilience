@@ -2,12 +2,13 @@
 #+AUTHOR: S B Post
 #+Options: toc:2 H:3 num:2
 #+LATEX_HEADER: \usepackage{natbib}
-#+SETUPFILE: ~/sorensfolder/org/org-html-themes/setup/theme-readtheorg-local.setup
+#+LaTeX_HEADER: \documentclass[11pt,twoside,a4paper]{report}
+#+LaTeX_HEADER: \setlength{\parskip}{1em}
 
 \newpage
 
 * Product presence: RCA
-Economies differ by sizes of many magnitudes. For instance, the economy of the US is around 19 trillions USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (also known as the Balassa Index). 
+Economies differ by sizes of many magnitudes. For instance, the economy of the US is around 19 trillions USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (also known as the Balassa Index). Originally introduced by cite:balassa_trade_1965.
 
 RCA compares the share of a products export value in a regions total export to the share of the products global export value in the total global exports. More formally:
 
@@ -16,6 +17,54 @@ $$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }
 where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year. If RCA is at 1 or above, a comparative advantage is considered revealed.
 
 ** Coding RCA
+  :PROPERTIES:
+  :header-args:R: :session rca :results silent
+  :END:
+
+For data I use the cleaned trade data in SITC rev. 2 format (four digit). I only use data for the year 2010.
+
+   #+begin_src R 
+     library(tidyverse)
+     library(vroom)
+     ## read data
+     path <- "~/sorensfolder/sbpdata/data/sitc-rev2_tidy.csv"
+     trade <- vroom(path) %>%
+       filter(time == 2010) %>%
+       select(-rca)
+   #+end_src
+
+First, I build a country-product matrix, where the elements are the export-value in constant dollars.
+
+   #+begin_src R 
+     mat <- spread(trade, key = unit, value = intensity) %>%
+       select(-time) %>%
+       column_to_rownames(var = "region") %>%
+       as.matrix()
+   #+end_src
+
+I calculate RCA values in three steps. First I find the share of a products export value in a country's total exports (the numerator) for each product.
+
+#+begin_src R
+  share_unit_region <- mat / rowSums(mat)
+#+end_src
+
+The ~rowSums~ sums the product export values for each country. This results in a vector with each country's total export value. This is then divided into the intensity matrix, element-wise. It is repeated column by column, meaning that each product is divided by respective country's total export. 
+
+Second I find the share of each products export value in the total value of global exports (denominator).
+
+#+begin_src R
+  share_unit_global <- colSums(mat) / sum(mat)
+#+end_src
+
+This is essentially the same procedure as before, but with the column sums (a vector containing the total value of a products exports over all countries) divided by a vector (global exports).
+
+Finally, I perform the division. This is essentially that same idea as step one. I transpose the nominator-matrix in order for R 
+
+ #+begin_src R
+   incidence_mat <- t(
+       t(share_unit_region) / share_unit_global
+   )
+ #+end_src
 
  \newpage
 
@@ -26,10 +75,11 @@ Let $M$ be a binary matrix, where rows are countries and columns are products. I
 
 We can think of each product as having a set of countries in which the product occurs. That is, each column of $M$ constitutes a set. The set for product $i$ is denoted $P_i$. If two products $i$ and $j$ has the same country in their respective sets, they co-occur in this country. The similarity between two products is based on how much the co-occur.
 
-Let $C$ be a co-occurrence matrix between products:
-$$ MM^T = C $$
+Let $C$ be a co-occurrence matrix between products: $MM^T = C$
 
-Each element in $C$ is the number of co-occurrences between the row product and the column product. That is, $C = (c_{ij}) \in \mathbb{R}^{n \times n}$ where $c_{ij} = |U_i \cap U_j|$.
+Each element in $C$ is the number of co-occurrences between the row product and the column product. That is, 
+
+$$ C = (c_{ij}) \in \mathbb{R}^{n \times n} \text{, where } c_{ij} = |U_i \cap U_j|$$ 
 
 Let then a vector $\vec{v}$ have the cardinality for each products set: $\vec{v} = \begin{bmatrix} v_1 & v_2 & \dots & v_m \end{bmatrix}$, where $v_m = |U_m|$.
 
@@ -87,3 +137,8 @@ In other words, the coherence is the intensity weighted average density for the 
 * Capability change
 
 \newpage
+
+* References
+
+bibliography:../writing/referenced.bib
+bibliographystyle:apalike
