@@ -238,11 +238,11 @@
  #+end_src
 
 ** Distance between countries and products
- If we assume that countries that specialize (RCA) in products have the capabilities to export them, and that similar products have overlapping capabilities, we can also infer information between countries and products.
+ If we assume that countries that specialize (RCA >= 1) in products also have the capabilities required, and that similar products have overlapping capabilities, we can also infer information between countries and products.
 
  In the literature, density/distance is the most often used metric to quantify how "close" the capability base of a country is to the requirments of a product. 
 
- Density of a country $c$ around a product $p$ is defined as the ratio between the sum of the pairwise proximity values between all the products exported by country $c$ and the product $p$ and the sum of all products pairwise proximity values to $p$ (excluding itself). When this value is subtracted from 1, the metric is called distance. Instead of proximity, any similarity metric can be used. More formally:
+ Density of a country $c$ around a product $p$ is defined as the ratio between the sum of the pairwise proximity values between all the products exported by country $c$ and the product $p$ and the sum of all products pairwise proximity values to $p$ (excluding itself). Instead of proximity, any similarity metric can be used. More formally:
 
  $$
  \text{Dens}_{j}^{c} = \frac{ \sum_{i} m_{ci} \text{Pr}(ij) }{ \sum_{i} \text{Pr}(ij) }
@@ -272,8 +272,10 @@ bibliographystyle:apalike
 * To do list
 ** TODO NA check for RCA
 ** TODO NA check for prox
-** TODO Relatedness: pro
-** TODO relatedness: assoc
+** DONE Relatedness: pro
+   CLOSED: [2019-10-14 Mon 11:23]
+** DONE relatedness: assoc
+   CLOSED: [2019-10-14 Mon 11:23]
 ** TODO Density
 ** TODO Coherence
 ** TODO Figures 

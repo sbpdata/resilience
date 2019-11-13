@@ -1,24 +1,210 @@
-#+TITLE: Resilience (DRAFT)
+#+TITLE: Resilience (DRAFT, MD)
 #+AUTHOR: S B Post
-#+DATE: Oct 2019
-#+Options: toc:2 H:3 num:2
+#+DATE: 2019
+#+Options: toc:3 H:3 num:2
 #+LATEX_HEADER: \usepackage{natbib}
 
 \newpage
 
-* Concept
-Resilience has gotten a reputation of an academic 'buzzword of the times', which seems to have led --- much in the vein of sustainability of the 90s, it seems nigh impossible to write a paper without an introduction that first laments the vagueness of the term, its 'buzziness',  and suggests a clarification. So too here. 
+* Introduction
+[...] I use international trade data to examine the relationship between economic shocks and industrial structure. I am interested in two aspects: how does the industrial structure in an economy affect the depth of economic shocks and recovery, as well as the impact of economic shocks on the post-shock industrial change. _I use the financial crisis of 2007-9 as the source of economic shocks_.
 
-We can think of the resilience concept in terms of the three questions popularized by cite:carpenter_metaphor_2001:
- - resilience to what?
- - resilience by what?
- - resilience  
+On why understanding resilience is important: shocks leads to adverse outcomes, especially for the poorest (documented repeatedly) - investment in children, child health, civil war, conflict, crime. Se liste i Zotero.
 
-Unfortunately, metaphors do not make for good operational instruments. 
+Keynes (1923) - "The long run is a misleading guide to current affairs. In the long run we are all dead. Economists set themselves too easy, too useless a task if in tempestuous seasons they can only tell us that when the storm is past the ocean is flat again."
 
+1) Does the industrial structure of economies influence the impact of economic shocks?
+   - Initial impact
+   - Speed of recovery
+   - ... as function industrial diversity vs capability diversity
+
+2) Does the sophistication of economies, as measured by economic complexity, affect their resilience?
+   - same as 1 but as a function of economic complexity
+
+3) Does economic shocks influence economies'  likelihood of unrelated diversification?
+   - Capability matching
+   - Monte Carlo permutation hypothesis testing
+
+TODO formal definition of resilience, TODO proper introduction, TODO turn Qs into testable hypotheses.
+
+\newpage
+* Theoretical framework
+** Economic Capabilities and the Product Space
+   
+- TODO: Economic capability introduction.
+- TODO: Add empirical literature for each of points
+- TODO: Principle of relatedness
+
+To sidestep this issue, I join the literature following  cite:hidalgo_product_2007,hausmann_network_2011 in abstracting the specific capabilities away. I make the assumption that if certain capabilities are required for an economy to effectively produce a product, these capabilities must be present in economies that produces said products. That is, we can think of a region as possessing a set of capabilities. To effectively produce a product, certain capabilities must be present. If a region effectively produces a product, the necessary capabilities must be present in the regions capability set.
+
+This framework can be extended to extract information of the similarity between economic activities. Think of the relationship between regions, economic activities and capabilities as forming a tri-partite network. Countries posses a set of capabilities, which are in turn connected to the products that require them. In practice, however, we can only observe the regions and the products they produce. This leaves us a bi-partite network to infer the capability-nodes from. Using co-occurrence data (which countries produce which products), we can infer information on the relationship between products. If products tend to be produced by the same countries, this suggests that the productive structures required to produced them overlaps. We can quantify this overlap by giving each product-pair a similarity score. The score is high if products tend to co-occur in countries, low if they don't.
+
+#+attr_latex: :width 150px
+[[../figures/tri-bipartite.png]]
+
+The similarity between products allows us to map economic activities in relation to each other. In this network, nodes (products) are close to each other if their similarity-score is high. The network mapping between products is the Product Space citep:hidalgo_product_2007. It follows that if we have information on the shared capability-requirements between products, and we assume that countries possess the capabilities required for the products they export, we can also quantify how 'related' products are to a country's capability-base. If a potential new product is closely related to the products already in the product-basket of a country, this indicates that the country already possesses most of the requirements to produce the new product. That is, the distance between the products current set of capabilities and the set of capabilities necessary to transition into the new product is small. 
+
+This pattern, that the 'activated' nodes in a network of similarities can tell us which nodes are likely to become activated in the future, is referred to as the "principle of relatedness" and have been shown to apply for a wide array of relationships: entry of new industries to regional economies in Sweden citep:neffke_how_2011 and China citep:zhu_how_2017, which technologies are patented in American cities citep:boschma_relatedness_2015, and which new research areas scholars, universities, or countries expand into citep:guevara_research_2016, to name a few.
+
+
+TODO - Density
+
+[TODO ins product space graph]
+
+[ TODO on product space: it has been shown that the relationship between products and capabilities is a robust predictor of economic development for countries.... cite cite cite ... complexity + ]
+
+** Measuring economic shocks
+** Economic resilience
+*** Notes
+    
+[TODO see notes to articles] 
+As has been noted many times elsewhere, resilience is, much like sustainability was before, a term that connotes different things for different people. It is helpful to separate resilience into a few distinct concepts. 
+
+For the purpose of this paper, resilience is an attribute of a system. 
+
+'Engineered' resilience refers the a systems ability to return ('bounce back') to a pre-shock state. Friedmann (xxxx) likens this type of resilience to a string along a board, that is "plucked" during shocks. 
+
+'Ecological' resilience refers to a systems ability to retain its core functions and outputs after a shock or a disturbance. 
+
+'Resistance' refers to the level of pressure a system can endure before being disturbed.
+
+- Portfolio theory: more specialization is better when times are great, worse when times are bad. Same as with stocks: diversity is less risky.
+- Diverse specialization: 
+- Local search: A more coherent industrial mix increases the "possible" for workers displaced by disturbance. Related to the idea of modularity or redundance. If there is a very coherent product-mix, this would suggest that workers have capabiliy overlap. Therefor, they be easier to soak up into the economy. However, closer proximity in the export-basket of countries might also mean that larger parts of the economy is hit at the same time. A more disperse economy would benefit from modularity effects, i.e. if the economy is not very intermingled, it does not mean that th whole economy fails, when one part is hit.
+
+- Economic resilience as path through a fitness landscape. 
+
+** The link between economic structure and resilience
+- Local search
+- Diverse specialization
+
+** Metrics
+*** Revealed Comparative Advantage
+The size of national economies differ in size by many magnitudes. For instance, the economy of the US is around 19 trillion USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (RCA), originally introduced by cite:balassa_trade_1965.
+
+RCA compares the share of a product's export value in a region's total export to the share of the products global export value in the total global exports. In other words, Italy's revealed comparative advantage in pasta is the value of Italian pasta exports divided by the total value of Italy's exports, divided by the share of pasta in total world exports. More formally, RCA for country $c$ in product $p$ is defined as:
+
+ $$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
+
+ where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year. If RCA is at 1 or above, a comparative advantage is considered revealed. It is worth mentioning that RCA captures relative specialization, not actual proficiency. Say Italy is a feckless producer of pasta. As long as they are even worse at producing other products, the RCA in pasta would still be high.
+
+*** Product relatedness
+ I use two metrics to approximate the capability overlap between products: proximity and association strength. Both similarity-metrics are based on co-occurrence data. A product 'occurs' in a country if the country has an RCA of at least 1 in the given product. If two products are present in the same country, the products co-occur. 
+
+Proximity is widely used in the Economic Complexity literature, and refers to the smallest of the pairwise conditional probabilities of two products co-occurring. That is, the proximity between product $i$ and $j$ is the smallest of the probability of a country exporting $i$ given that the country already exports $j$, and reverse.  Association strength is the ratio between how often the two products actually co-occur versus how often we would statistically expect them to co-occur. 
+
+ Proximity is sourced from cite:hidalgo_product_2007 (and much of the subsequent literature on economic complexity), while association strength is from cite:eck_how_2009 (and the scientometrics literature).
+
+ Let $M$ be a binary matrix, where rows are countries and columns are products. If country c has a revealed comparative advantage in product p, $m_{cp}$ has a value of 1. If not, $m_{cp}$ has a value of 0. For all the products that have the value 1 for a country, we say that the products 'occurs' in the country. 
+
+ We can think of each product as having a set of countries in which the product occurs. That is, each column of $M$ constitutes a set. The set for product $i$ is denoted $P_i$. If two products $i$ and $j$ has the same country in their respective sets, they co-occur in this country. The similarity between two products is based on how much the co-occur.
+
+ Let $C$ be a co-occurrence matrix between products: $MM^T = C$. Each element in $C$ is the number of co-occurrences between the row product and the column product. That is, 
+
+ $$ C = (c_{ij}) \in \mathbb{R}^{n \times n} \text{, where } c_{ij} = |U_i \cap U_j|$$ 
+
+ Let then a vector $\vec{v}$ have the cardinality for each products set: $\vec{v} = \begin{bmatrix} v_1 & v_2 & \dots & v_m \end{bmatrix}$, where $v_m = |U_m|$.
+
+ So, $v_i$ is the number of countries that export product $i$ with an RCA value of at least 1 and $c_{ij}$ is the number countries that export both product $i$ and product $j$ with a comparative advantage. Now we can define the association strength between the two products $i$ and $j$ as: 
+
+ \begin{equation}
+ \text{AS}(i,j) = \frac{|U_i \cap U_j|}{|U_i||U_j|} =\frac{c_{ij}}{v_iv_j}
+ \end{equation}
+
+ Similarly we can define the proximity between the two products $i$ and $j$ as:
+ \begin{equation}
+ \text{Pr}(i,j) = \text{min}\{P(U_i|U_j),\text{ }P(U_j| U_j) \} = \frac{c_{ij}}{\text{max}\{v_{i} \text{, }v_{j}\}}
+ \end{equation}
+
+
+- TODO interpretation and range of possible values
+- TODO Remember the m in mA_ij.
+  
+
+*** Density
+
+*** Fitness and complexity 
+*** Industrial structure
+- industrial diversity
+- capability diversity
+- capability matching
+
+\newpage
+
+** Empirics
+*** India micro empirics
+
+| Authors                | Year | Article                                                                                              | Read |
+|------------------------+------+------------------------------------------------------------------------------------------------------+------|
+| Bajpai                 | 2011 | Global Financial Crisis, its Impact on India and the Policy Response                                 | TODO |
+| Banerjee and Iyer      | 2005 | History, Institutions, and Economic Performance: The Legacy of Colonial Land Tenure Systems in India | TODO |
+| Cole et al.            | 2012 | Do voters demand responsive governments? Evidence from Indian disaster relief                        | TODO |
+| Duflo and Pande        | 2007 | Dams                                                                                                 | TODO |
+| Iyer and Topalova      | 2014 | Poverty and Crime: Evidence from Rainfall and Trade Shocks in India                                  | TODO |
+| Marelli and Signorelli | 2011 | China and India: Openness, Trade and Effects on Economic Growth                                      | TODO |
+| Topalova               | 2005 | Trade Liberalization, Poverty, and Inequality: Evidence from Indian Districts                        | TODO |
+| Topalova               | 2010 | Factor Immobility and Regional Impacts of Trade Liberalization: Evidence on Poverty from India       | TODO |
+
+*** Economic shocks
+
+| Authors             | Year | Article                                                                     | Read |
+|---------------------+------+-----------------------------------------------------------------------------+------|
+| Ferreira and Schady | 2008 | Aggregate Economic Shocks, Child Schooling and Child Health                 | TODO |
+| Hodler and Raschky  | 2014 | Economic shocks and civil conflict at the regional level                    | TODO |
+| Cicone              | 2011 | Economic Shocks and Civil Conflict: A Comment                               | TODO |
+| Bazzi and Blattman  | 2014 | Economic Shocks and Conflict: Evidence from Commodity Prices                | TODO |
+| Dix-Carneiro et al. | 2017 | Economic Shocks and Crime: Evidence from the Brazilian Trade Liberalization | TODO |
+| Monras              | 2015 | Economic Shocks and Internal Migration                                      | TODO |
+| Duryea et al.       | 2007 | Effects of economic shocks on children's employment and schooling in Brazil | TODO |
+| Kim                 | 2016 | Revisiting Economic Shocks and Coups                                        | TODO |
+
+*** Economic resilience
+
+| Authors                 | Year | Article                                                                                                                  | Read |
+|-------------------------+------+--------------------------------------------------------------------------------------------------------------------------+------|
+| Sensier et al.          | 2016 | Measuring Regional Economic Resilience across Europe: Operationalizing a complex concept                                 | TODO |
+| Monras                  | 2015 | Economic Shocks and Internal Migration                                                                                   | TODO |
+| Hallegatte              | 2014 | Economic Resilience: Definition and Measurement                                                                          | TODO |
+| Giannakis and Bruggeman | 2017 | Determinants of regional resilience to economic crisis: a European perspective                                           | TODO |
+| Diodato and Weterings   | 2015 | The resilience of regional labour markets to economic shocks: Exploring the role of interactions among firms and workers | TODO |
+| Di Caro and Fratesi     | 2018 | Regional determinants of economic resilience                                                                             | TODO |
+| Bristow and Healy       | 2018 | Innovation and regional economic resilience: an exploratory analysis                                                     | TODO |
+| Martin et al.           | 2016 | How Regions React to Recessions: Resilience and the Role of Economic Structure                                           | TODO |
+| Martin and Sunley       | 2015 | On the notion of regional economic resilience: conceptualization and explanation                                         | TODO |
+
+
+
+
+
+*** Economic complexity
+*** Product space, principle of relatedness
+
+* Data
+** Trade data
+The raw data on international trade comes from the UN COMTRADE database (United Nations International Trade Statistics Database). The raw values are harmonized and cleaned through the Bustos-Yildrim method. Essentially, the cleaning procedure exploits the double reporting of trade goods to suss out inconsistencies. Through the distance between the value reported by importers and exporters, each country can be given a 'reliability-score', which then acts as weights when reconciling differences in bilateral trade reportings (i.e. import vs export countries). This allows a wide, reliable coverage of bilateral trade flows at a fairly granular precision. For the purposes of this work, the bilateral trade-flows are aggregated into country-level exports at product level. The Growth Lab at Harvard University distributes the cleaned version of the COMTRADE data. Here, I use TODO format at the four-digit level. 
+
+In addition to the harmonization of the data, I apply a separate cleaning procedure. I TODO
+
+** GDP data
+- Penn World Tables
+- Maddison database
+* Metrics
+** Identifying and dating shocks
+*** Classical business cycle approach 
+- Issues with classical approach: many times, developing countries does not experience absolute recession, but at growth recession. That is, growth slows down, but does not become negative. (Consider an alternative measurement method of slow downs - trade, etc. Something that DOES become negative and potentially acts as a proxy for GPD/employment.)
+- Use yearly data bc other metrics are yearly
+- ln(y_t), first differences, different phases, shump, artikel
+*** (Maybe "Modern" business cycle approach)
+ - See section 4. in Rand (2002) "Business Cycles in Developing Countries: Are they Different?"
+ - Look at "growth cycle" or short 
+ - Issues with "modern" approach: very dependent on smoothing params and de-trending procedures. See fx Rand 2002.
 * References
 
 bibliographystyle:apalike
 bibliography:./referenced.bib
 
-
+* Articles of interest
+- Child human capital and aggregate economic shocks: http://repositorio.minedu.gob.pe/bitstream/handle/123456789/3542/Aggregate%20Economic%20Shocks,%20Child%20Schooling%20and%20Child%20Health.pdf?sequence=1&isAllowed=y
+- Brazil paper: economic shocks and impact on education. Could be an interesting variable in rel to India. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2094529/
+- Papir der viser at dev aid er pro-cyclical når der er stort macro econ stress. https://www.sciencedirect.com/science/article/pii/S0305750X13003033
+- Poverty and Crime: Evidence from Rainfall and Trade Shocks in India - trade shocks and rain fall shocks

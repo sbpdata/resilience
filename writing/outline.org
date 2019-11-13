@@ -24,10 +24,14 @@
 - Why choose business cycle approach, and not trade-flow/financial flows? (i.e. why an outcome based approach?) 
 - 'Modern business cycles' (trend shocks) vs 'classical business cycles' (absolute shocks), turning points and BBQ algorithm.
 - The 'double-issue' with using classical business cycles in relation to developing countries. ('growth cycles', 'hysteresis' and long run impacts, + examples in lit)
+- Issue: Spurious turning points.
 ** Network effects, economic structure, and resilience
 - Network topology is important for resilience of systems (graph theory, physical systems, social networks)
 - Theoretical evidence, empirical evidence, and common sense that this also applies to economic systems
 - Brief review of evidence.
+
+- literature: see table 6 in Martin and Sunley 2015-6. 
+
 ** Capabilities, complexity and the product space
 - Brief review of 'capability concept'
 - Introduction of the product space, and how this relates to the development of countries.
@@ -70,8 +74,9 @@
 *** Resilience
 - Multiple linear regression (MLR) models on shock metrics and "economic structure"-independent variables.
 *** Structural change post-shock
-- Monte Carlo permutation (MC) tests on difference in relatedness of new products (post-shock vs null-distribution)
-- MC tests on complexity of new products (post-shock vs null-distribution)
+- Is there a structural change? - MC test on Cosine similarity between 5-years after shock and pre-shock year.
+- Does shocks increase "long jumps"? Monte Carlo permutation (MC) tests on difference in relatedness of new products (post-shock vs null-distribution)
+- Does shocks induce "industrial upgrade"? MC tests on complexity of new products (post-shock vs null-distribution)
 - (Consideration of interaction effects of shock severity and structural change coefficients.)
 
 * Results
@@ -84,5 +89,6 @@
 - GDP as reference state metric (misses a lot of important micro/meso-level impacts, subject to revisions).
 - Possibilities of non-linearity in relationship.
 - Attenuation bias because of imprecise proxies.
+- P-value inflation for many tests.
 ** Further work
 * Conclusion
