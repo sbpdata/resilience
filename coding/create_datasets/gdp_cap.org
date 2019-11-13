@@ -1,0 +1,119 @@
+* GDP per capita from three different sources
+    :PROPERTIES:
+    :header-args:R: :session gdp_cap :exports code :tangle ../scripts/joined_gdp_cap.R :results silent
+    :END:
+
+This file documents and tangles code to pull and save GDP/cap data from three sources: Penn World Tables, Maddison and World Development indicators. The code file is tangled into TODO, while the .csv file is written into the data folder as "joined_gdp_cap.csv".
+
+First I read trhe required libraries. The package ~wdi~ provides an API to pull data from the World Development Indicators, while the ~pwt9~ package contains the Penn World Tables 9.1 data. Maddison data is pulled from the URL.
+
+#+begin_src R
+library(here)
+library(tidyverse)
+library(countrycode)
+library(haven)
+library(pwt9)
+library(WDI)
+#+end_src
+
+** Penn World Tables data
+
+   #+begin_src R
+     pwt <- as_tibble(pwt9.1)
+   #+end_src
+
+ The variables used here are the rgdpna (Real GDP based on national accounts, in constant prices) and pop (population). From the documentation, the description of RGDPNA is as follows: "Real GDP using national-accounts growth rates, for studies comparing (output-based) growth rates across countries". The use-case is "Dependent variable in (cross-country) growth regressions". Some charactor variables (iso-code, fx) are loaded as a factor. They are also coerced into charactor-variables. If they aren't, joining won't work.
+
+   #+begin_src R
+     pwt_tidy <- pwt %>% 
+       select(isocode, year, rgdpna, pop) %>% 
+       mutate(pwt_gdp_cap = rgdpna / pop) %>% 
+       mutate_if(is.factor, as.character) %>%
+       select(isocode, year, pwt_gdp_cap)
+   #+end_src
+
+** Maddison data
+   The Maddison data is provided by the University of Groningen in their 2018 Maddison Project Database. There is a documentation paper [[https://www.rug.nl/ggdc/html_publications/memorandum/gd174.pdf][here]].
+
+   #+begin_src R
+     maddison_path = "https://www.rug.nl/ggdc/historicaldevelopment/maddison/data/mpd2018.dta"
+
+     mad <- read_stata(maddison_path)
+   #+end_src
+
+   The maintainers of the database recommends the RGDPNApc (Real GDP based on National Accounts, per capita) for computing relative growth rates. This is equivalent to the metric used by PWT.
+
+   #+begin_src R
+ mad_tidy <- mad %>%
+	 select(isocode = countrycode, year, mad_gdp_cap = rgdpnapc)
+   #+end_src
+
+** World Development Indicators data
+ The WDI package provides the ~WDI~ function, which uses an API to source the data from the indicators. 
+
+ #+begin_src R
+   wdi <- as_tibble(
+     WDI(
+       country = "all",
+       indicator = "NY.GDP.PCAP.PP.CD",
+       extra = TRUE,
+       start = 1960)
+   )
+ #+end_src
+
+The variable NY.GDP.PCAP.PP.CD is in GDP per capita, PPP (current international $). This variable is national accounts-based (https://datatopics.worldbank.org/world-development-indicators/themes/economy.html).
+
+ #+begin_src R
+   wdi_tidy <- wdi %>%
+     select(isocode = iso3c, year, wdi_gdp_cap = NY.GDP.PCAP.PP.CD) %>%
+     mutate_if(is.factor, as.character) %>%
+     mutate(year = as.double(year))
+
+   wdi_tidy %>% filter(year == 1989) %>% filter(!is.na(wdi_gdp_cap))
+ #+end_src
+
+** Join, add yearly growth variable and write files
+ I now join the three datasets. I use a ~full_join~ which keeps all observations from all the data sets. Those without matches get an NA value in the unmatched column. The names of the different countries are not the same across the sets. In addition, there are some broader categories ("middle east") and 'unofficial' territories in some of the datasets. I therefor use the ~countrycode~ package to give iso 3 names to countries of the three different sets. I drop all those not matched.
+ #+begin_src R
+   joined <- wdi_tidy %>%
+     full_join(mad_tidy) %>%
+     full_join(pwt_tidy) 
+
+   # standardise country-names by running am external matching 
+   # function on the country variable and dropping all the non-matched 
+   # observations. This removes entries like "Arab World".
+   joined$iso_new <- countrycode(sourcevar = joined$isocode,
+          origin = 'iso3c',
+          destination = 'iso3c')
+
+   joined_clean <- joined %>%
+     drop_na(iso_new) 
+
+ #+end_src
+
+ We can see the set of dropped observations here:
+ #+begin_src R
+ # NOT RUN:
+ # dropped_obs <- joined %>% 
+	# filter(isocode %in% setdiff(unique(joined$isocode), unique(joined$iso_new))) %>% pull(isocode) %>%
+	# unique()
+ #+end_src
+
+I now rearrange variables, so that each metric is its own observation (i.e. row). I also compute the yearly change as a proportion. Growth means that gdp_change is above 1.
+
+ #+begin_src R
+   joined_clean <- joined_clean %>%
+     select(-iso_new, wdi = wdi_gdp_cap, mad = mad_gdp_cap, pwt = pwt_gdp_cap) %>%
+     gather(c(wdi, mad, pwt), key = series, value = gdp_cap) %>%
+     group_by(series, isocode) %>%
+     arrange(year) %>%
+     mutate(gdp_change = lead(gdp_cap, n = 1L) / gdp_cap) %>%
+     ungroup() 
+ #+end_src
+
+ Finally, I write to file. 
+ #+begin_src R
+   output_dir <- here("data/joined_gdp_cap.csv")
+
+   write_csv(joined_clean, output_dir)
+ #+end_src

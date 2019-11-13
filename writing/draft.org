@@ -1,0 +1,299 @@
+#+TITLE: Draft from outline
+#+AUTHOR: S B Post
+#+DATE: 2019
+#+Options: toc:2 H:4 num:4
+#+LATEX_HEADER: \setlength{\parskip}{1em} % set spaces between paragraphs to 1 character
+#+LATEX_HEADER: \setlength{\parindent}{0em} % set indents for new paragraphs to 0
+#+LATEX_HEADER: \usepackage{natbib}
+
+Primary TODO:
+- Martin et al (2016) How Regions React to Recessions: Resilience and The Role of Economic Structure - har mål for structural change, mål for economic structure
+- Read Heterogeneous economic resilience and the great recession’s world trade collapse
+- DONE Di Caro 2018
+- Read Simmie and Martin 2014: The economic resilience of regions: towards an evolutionary approach
+
+\newpage
+* Introduction
+- Why study shocks and resilience?
+- Present outline, methods and results
+- By far vst majority of papers have been on advanced economies.
+
+Here I present empirical evidence on the relationship between economic shocks and resilience for:
+1. Industrial (counting) diversity
+2. Product space diversity
+3. Industrial sophistication
+4. (How regions are placed in the supply (input-output) network)
+   
+- I test three aspects of economic resilience: resistance (depth and duration of downturn), recovery (?) (duration of recovery phase), and adaptability and renewal (structural change after shock).
+
+- In addition, I test for structural change related to post-shock economies. Are economies more likely to after a shock? Does the severity of the shock matter? Do countries tend to "upgrade" their industries after hit by a shock?
+
+* Theoretical framework and literature review
+** Conceptualizing economic resilience 
+   - Fuzzy concept
+Much like sustainability was before it, resilience has become a notoriously fuzzy concept. For instance, one review found sixteen "overlapping conceptualisations" from the literature on social, ecological and socio-ecological systems citep:bahadur_resilience_2010. As noted by cite:simmie_regional_2014, this is possibly due to the different ontological approaches to concept. 
+
+"Engineered resilience
+
+** Empirics: resilience
+- Fratesi U, Rodrìguez-Pose A (2016) The crisis and regional employment in Europe: What role for shelteredeconomies: Most resilient economies were those that were more competitative before the crisi (oplagt at måle dette i forhold til complexity)
+- Martin et al (2016)cite:martin_how_2016: "Further, while economic structure is found
+to have exerted some influence on the resistance and recoverability of certain regions, in
+general ‘region-specific’ or ‘competitiveness’ effects appear to have played an equally, if not
+more, significant role."
+- Di Caro 2015 on italian regions - https://rsaiconnect-onlinelibrary-wiley-com.ludwig.lub.lu.se/doi/full/10.1111/pirs.12168, see especially second step.
+- This is a review from 2011- https://nyu-staging.pure.elsevier.com/en/publications/economic-shocks-and-regional-economic-resilience
+- Schumpetering thinking in resilience and economic geography:
+  - Simmie 2014a: Evolutionary growth theory and resilience in UK cities: re-invention, replication, recession
+and recovery.
+  - Simmie 2014b: Regional economic resilience: a schumpeterian perspective cite:simmie_regional_2014 
+  - Ift Schump: viser Neffke et al at entrenapeurer står for structural change?
+  - Ift Schump: "accelerations of technological innovation during peridos of depression were the main drivers of recovery".
+  - Ift structuren af netværket som havebde betydning for shocks og økonomien: Acemoglu papers, Diodato paper.
+  - It is a well-known fact that the network topology of a system has an effect on the systems resilience... 
+** Economic capabilities, diversification and the Product Space
+- Artikler:
+  - Method papers: cite:tacchella_new_2012,servedio_new_2018, on the convergence cite:pugliese_convergence_2016
+  - Empirics: better forecasting than imf:cite:cristelli_heterogeneous_2015-1, cite:tacchella_dynamical_2018, jumping longer and catching up cite:zhu_how_2017, 
+- TODO Få overblik over historien
+
+Explanory model: fitness = high growth potential, a "smart" economy. could therefor be a link between the fitness-level and regional resillience. Should probably be controlled for A) HC, B) diversity in industries.
+** Linking resilience to industrial structure
+- Industrial diversity vs capabilities
+- creative destruction and innovation
+- Fitness surface, local search, modularity, etc.
+- See Sensier and Artis (2016) "The Resilience of Employment in Wales: Through Recession and into Recovery" p. 588 on overview of articles on why shocks might permanently change metrics in the economy.
+
+** Identifying and measuring economic shocks
+- Classic approach and BBQ algorithm. Main method papers: 
+  1. BBQ algorithm for business-cycle dating: cite:harding_dissecting_2002
+  2. Operationalizing economic resilience: cite:sensier_measuring_2016-1,bristow_innovation_2018
+  3. On business cycles in developing countries: cite:rand_business_2002 
+- Modern approach: TODO have not decided whether to include.
+  1. Issues
+  2. Why use, why not use; "identification and grading severity of different shocks is complex. Instead, I use an outcome-based approach. This has some issues..."
+- Issues with using the classic business cycle model to date shocks (especially to developing countries). See cite:harding_dissecting_2002 for some points. Also cite:sensier_measuring_2016-1
+- See Artis 2004 for deviation, growth cycle identification
+- Clarify stance on whether to identify types of shocks as demand side/supply-side.
+- [ ] *Justification for using the great recession and a 'single metric' shock*
+- [ ] 
+- [ ] *There exists many types of shocks... and they are typically exected to impact ecohomies differently...* see IMF paper from cite:sensier_measuring_2016-1. IMF paper is 
+- [ ] Martins Sensitivity index
+*For clarification on the business cycles...* see cite:harding_suggested_2005 
+When we identify business cycles, we typically use one of two general approaches to measure changes in the reference metric (eg. GPD). 
+1. The absolute value of GDP, or some transformation of it (like the natural log).
+2. The absolute value of GDP filtered by some permanent component or a de-trending operation. 
+
+The first approach is often referred to as the classical business cycle approach. For the second approach, some assumption or estimation procedure is needed for the permanent component or the trend to be subtracted off. 
+
+One of the main issues with using a classical business cycle approach to identify economic shocks is that the central identifying mark of turning points is an observed or implied growth rate of 0. However, one can think of many types of economic shocks that would qualify as significant disturbances to all or some parts of the economy that does not necessary involve a negative change in the level of the aggregate economy. This becomes doubly problematic for less developed economies, as they tend to experience growth slowdowns rather then declines in the absolute level of GDP (CITE CITE CITE, fx the Great Recession and developing countries-book). For instance, during ... 
+
+For instance, some evidence suggests that lower income countries tend to suffer from lower human capital accumulation after shocks (...): lower school enrollment, poorer health outcomes, factors compound to the lowest quantiles of the income distribution. ... etc. While these effects might not be readily apparent in an absolute decline, the impacts are likely to dampen growth rates in the longer run, something that would not be captured in the classical business cycle-classification. An additional concern is that while some shocks are more likely to affect total output in economies across development levels (sharp rises in oil prices, for instance), others are more likely to impact .. and others yet might mainly have an effect on longer term growth paths - for instance, sharp resource shifts from more to less labor intensive sectors or regions in an economy would not necessarily impact domestic output, but would by the results presented in ... lead to lower levels of human capital. 
+
+[Segway to why it is beneficial to look both at a cross national pattern (Internationally) as well as more localized pattern (India), where GDP is used for the international data and employment levels AND output is used for India.]
+
+It is important to allow for a flexible, data driven dating of the economic shock. Economic shocks tend to spread to different economies in many ways, hitting some early and some late. Take the Great Recession as is the focus of this paper. The starting point of this financial crisis is generally reported as the fall of the Lehman Brothers investment bank in 2008. However, before that, financial markets suffered under the subprime mortgage crisis in 2007, which were again influenced by ...
+
+I use a modified version of the BBQ algorithm presented by cite:harding_dissecting_2002 to date the business cycles. The BBQ is a refinement of the method presented by Bry and Boschan (1973) (which builds on Burn and Mitchell).... A business cycle is defined as lasting from one peak to the next peak. The economy can be in on of two mutually exclusive 
+- Two mutually exclusive phases
+- Points must alternate.
+
+ While the BBQ is based on quarterly data (hence the Q), I follow cite:sensier_measuring_2016-1 in adapting the process to yearly data by changing the censoring requirements so that the minimum duration for at phase is one year and the minimum duration for a cycle is two years. Each region is treated as a separate time-series, such that different dating results does not impact each other.
+
+The process is simple. If $Y_t$ is the value of a given reference state metric at time $t$, I define $y_t = ln(Y_t)$. I then take first differences of the series $y_t$, such that $\Delta y_t = y_t - y_{t-1}$. If $\Delta y_t$ is negative, I assign the observation a 1. If positive, 0. 1s represent a contraction phase, while 0s represent an expansion. The observations right before a change (0 $\rightarrow$ 1, 1 $\rightarrow$ 0) is a turning point in the business cycle. Changes from 0 to 1 is a peak (growth stops) and changes from 1 to 0 is a trough (decline stops). A business cycle is considered complete when a new peak occurs.
+
+Figure ref:stylized-bc shows a stylized business cycle. *P^1* represents the first peak, *P^2* the subsequent peak. Hence, the time from *B^1* to *B^2* is the duration of the business cycle. *T* is the trough. *A^1* is the amplitude, or the depth, of the downturn, measured as the vertical distance between *P^1* and *T*. The horizontal distance between *B^1* and *T* is the time between the peak and the trough, i.e. the duration of the downturn. I define an economy as having "recovered" from a downturn when the reference metric has reached the pre-shock peak levels. In the figure, the duration of the recovery is marked by the distance between *T* and *R*.
+
+This presents the three metrics of interest: the depth of the downturn (*B^1* - *P^1*), duration of the downturn (*T* - *B^1*), and the duration of the recovery (*R* - *T*).
+
+#+CAPTION: A stylized business cycle.
+#+LABEL: stylized-bc
+[[../figures/bc.png]]
+
+* Methods, metrics and data
+** Data
+- Trade data
+- GDP data
+- (Consumption data, India)
+- (Employment data, India)
+- (Annual Survey of Industries, India)
+** Metrics
+*** Country-product and capability metrics
+Necessary inputs are after the colon.
+ 1. [ ] Trade data: raw (cleaned)
+ 2. [X] RCA data: trade data
+ 3. [ ] Product-product similarity data: RCA data
+ 4. [ ] Country-product density data: RCA data, product-product similarity data
+ 5. [ ] Country industrial diversity: RCA data
+ 6. [ ] Country capability coherence: country-product density data, RCA data
+ 7. [ ] Country Fitness and Product Complexity: RCA data
+ 8. [ ] Identifying new products: RCA data
+
+**** Revealed Comparative Advantage
+ The size of national economies differ in size by many magnitudes. For instance, the economy of the US is around 19 trillion USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (RCA), originally introduced by cite:balassa_trade_1965.
+
+ RCA compares the share of a product's export value in a region's total export to the share of the products global export value in the total global exports. That is, RCA quantifies if a country exports more that its "fair share" of a given product. In other words, Italy's revealed comparative advantage in pasta is the value of Italian pasta exports divided by the total value of Italy's exports, divided by the share of pasta in total world exports. More formally, RCA for country $c$ in product $p$ is defined as:
+
+  $$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
+
+  where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year. If RCA is at 1 or above, a comparative advantage is considered revealed. It is worth noting that RCA captures relative specialization, not actual proficiency. Say Italy is a feckless producer of pasta. As long as they are even worse at producing other products, the RCA in pasta would still be high.
+
+[Insert figure of RCA distribution]
+
+In order to identify if a product is has been introduced into a country, if it is "new", ... ["peeping over, dipping under", "dancing around the RCA = 1 line"]
+
+**** Product relatedness
+I use two metrics to approximate the capability overlap between products: proximity and association strength. Both similarity-metrics are based on co-occurrence data. For the purpose of this paper, a product 'occurs' in a country if the country has an RCA of at least 1 in the given product. If two products are present in the same country, the products co-occur. 
+
+Similarity measures based on co-occurrence data has to account for two basic effects: how often units co-occur and the total occurrence of each unit. That is,  ... This means that proximity is less straight forward to interpret. What constitutes as very similar? 
+
+Proximity is widely used in the Economic Complexity literature, and refers to the smallest of the pairwise conditional probabilities of two products co-occurring. That is, the proximity between product $i$ and $j$ is the smallest of the probability of a country exporting $i$ given that the country already exports $j$, and reverse. Association strength is the ratio between how often the two products actually co-occur versus how often we would statistically expect them to co-occur. [Maybe something on the reason to use both - the difference in 
+
+Let $M$ be a binary matrix, where rows are countries and columns are products. If country $c$ has a revealed comparative advantage in product $p$, $m_{cp}$ has a value of 1. If not, $m_{cp}$ has a value of 0. For all the products that have the value 1 for a country, we say that the products 'occurs' in the country.
+
+$$ M = \begin{cases} 1 \text{ if } RCA_{cp} \geq 1 \\
+ 0 \text{ if } RCA_{cp} \leq 1
+\end{cases} $$
+
+We can thus think of each product as having a set of countries in which the product occurs. The set for product $i$ is denoted $U_i$ and corresponds to the $i$^{th} column of $M$. If two products has the same country in their respective sets, they co-occur in this country. The similarity between two products is based on how much the co-occur.
+
+Let $C$ be a $p \times p$ co-occurrence matrix between products. Each element in $C$ is the number of co-occurrences between the row product and the column product. That is, $c_{ij} = |U_i \cap U_j|$. Let then a vector $\vec{v}$ have the cardinality for the set of each product, such that $\vec{v} = \begin{bmatrix} v_1 & v_2 & \dots & v_m \end{bmatrix}$, where $v_m = |U_m|$.
+
+So, $v_i$ is the number of countries that export product $i$ with an RCA value of at least 1 and $c_{ij}$ is the number countries that export both product $i$ and product $j$ with a comparative advantage. Now we can define the association strength (AS) and proximity (Pr) between the $i$^{th} and $j$^{th} products as:
+
+  \begin{align*}
+  \text{AS}(p_i,p_j) &= \frac{|U_i \cap U_j|}{|U_i||U_j|} = \frac{c_{ij}}{v_iv_j} \\
+  \text{Pr}(p_i,p_j) &= \text{min}\{P(U_i|U_j),\text{ }P(U_j| U_j) \}  = \frac{c_{ij}}{\text{max}\{v_{i} \text{, }v_{j}\}}
+  \end{align*}
+
+ - TODO interpretation and range of possible values
+ - TODO Remember the m in mA_ij.
+
+**** Density
+
+U' er sættet af producter der eksporteret af et land. 
+
+**** Industrial diversity and coherence
+**** Fitness and Complexity
+From the country-product matrix $M$ it is possible to extract information on the capabilities held be economies in different countries. To this end, I use the Fitness-Complexity algorithm developed in ...[fn:1] 
+*** Economy "reference state" metrics
+
+  1. Consumption data: raw (cleaned)
+  2. Real GDP data: raw (cleaned)
+  3. Employment data: raw (cleaned)
+  4. (Consumption data, India)
+  5. (Employment data, India)
+  6. (Annual Survey of Industries, India)
+
+*** Shock metrics
+ Necessary inputs are after the colon.
+  1. Binary time-series: reference state metric
+  2. Depth of shock: reference state metric, binary time-series
+  3. Length of downturn: reference state metric, binary time-series
+  4. Recovery to pre-shock peak: reference state metric, binary time-series
+
+** Methods
+*** Relationship between economic structure and resilience
+    - Test: Are shocks in industries that are more centrally placed in an economy 
+    - 
+*** Structural change
+- Testing degree of diversification in post-shock periods vs other periods
+  1. Test 1: MC permutation test between K years after shocks and other periods (post-shock/recovery) ("does a shock represent a 'Schumpeter-like' phase of creative destruction?")
+  2. Test 2: MC permutation test between K years before shocks and other periods (pre-shock/boom period) ("does a boom period lead to more diversification?")
+  3. Test 3: Linear regression: relationship between rate of diversification and depth of shocks ("does the depth of the shock influence the degree of renewal in the economy?")
+- Testing related vs unrelated variety diversification in post-shock periods vs other periods
+  1. Test 1: MC permutation test between K years after shocks and other periods (post-shock/recovery) ("does a shock represent a Schumpetarian phase of creative destruction, measured as the degree of unrelated diversification?")
+  2. Test 2: MC permutation test between K years before shocks and other periods (pre-shock/boom period) ("does a boom period lead to more unrelated diversification?")
+  3. Test 3: (Linear) regression: relationship between rate of diversification and depth of shocks ("does the depth of the shock influence the degree of renewal in the economy - based on ow unrelated the diversification is, can we talk of path-changing shocks?")
+* Results 
+* Discussion and conclusion
+
+*Possible contributions:* First time economic resilience is tied to capabilities. First time in a country with this meany poor people. First time the Schumpterian effect is examined in India/developing country microdata.
+
+
+Important further contributions: 
+1. the input-output linkages in the economy. For instance, there is evidence on how shocks are propagated differently throughout an economy, based on how central the sector is placed in the supply-chain network (that is, the directional input-output network) (cite acemoglu papers). It would be interesting to perform a ---
+2. more fine-grained definition of economic shocks
+3. less of a  
+
+
+
+
+*Acemoglu et al 2012, 2015:* shows that there is important information in the structure of input-output networks. A logical extension of this economic resilience science would be to understand the importance of the structure of the input-output network, that is, how are local industries related to each other. If there is a shock to central industries, does this worsen the impact of a shock? This can logically be tied to employment across industries. Fra artikel "A class of potentially-promising approaches based on the spread of small shocks from firms or disaggregated sectors through their economic and other links to other units in the economy has generally been overlooked, however. The idea is simple. A shock to a single firm (or
+sector) could have a much larger impact on the macroeconomy if it reduces the output of not only this firm (or sector), but also of others that are connected to it through a network of input-output linkages. (... rebuttal from Lucas based on small shocks washing out due to law of large numbers... ) 
+An important paper by Gabaix (2011) showed that when the firm-size distribution has very fat tails, so that shocks hitting the larger firms cannot be balanced out by those affecting smaller firms, the law of large numbers need not apply, opening the way to sizable macroeconomic fluctuations from idiosyncratic firm-level shocks. (... other papers) show how input-output linkages can also neutralize the force of the law of large numbers because shocks hitting sectors that are particularly important as suppliers to other sectors will not wash out and can translate into aggregate fluctuations."
+
+* References
+
+bibliographystyle:apalike
+bibliography:./referenced.bib
+
+* Figures
+- [X] Stylized business cycle representation
+- [-] Product space representation
+  - [X] Method: See product space script
+  - [ ] Data
+- [-] Matrix visualization (sorted by complexity, fitness)
+  - [X] Method
+   #+begin_src R
+     library(corrplot)
+     library(tidyverse)
+
+     mat <- matrix(c(1, 0, 1,
+                     1, 0, 0,
+                     1, 1, 1), ncol = 3, nrow = 3)
+
+     corrplot(
+       mat, # matrix to visualize
+       is.corr = FALSE, # use general matrix
+       method = "color", # layout of content
+       cl.pos = "n", # remove gradient legend 
+       tl.pos = "n" # axis remove
+     )
+
+     ## see more options here
+     ## https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
+
+   #+end_src
+  - [ ] Data
+- [ ] 
+
+* Ad hoc notes
+** Introduction
+
+- TODO Har regioner der er mere centralt placeret i industry-space mere resilient? Se Diodato and Wetterings 2014.
+  
+Fra en artikel "Since  the  global  financial  crisis  of  2008,  the  view  that  the  architecture  of  the  financial system plays a central role in shaping systemic risk has become conven-tional  wisdom.  The  intertwined  nature  of  the  financial  markets  has  not  only  been  proffered as an explanation for the spread of risk throughout the system (see, e.g., Plosser 2009 and Yellen 2013), but also motivated many of the policy actions both during and in the aftermath of the crisis.1" (Acemoglu 2015, cited more than a 1000 times).
+
+Measurements of economic structure: 1) capability overlap, 2) sophistication of economy, 3) input-output linkages.
+
+Work on input-output linkages: 
+- Acemoglu et al 2012: The Network Origins of Aggregate Fluctuations
+- Acemoglu et al 2015: Systemic Risk and Stability in Financial Networks
+- Acemoglu et al 2015: Networks, Shocks and Propagation (book)
+** Economic resilience
+- Resistance, resilience, recovery, etc
+- TODO make list of 3-4 most relevant articles
+  - Martin and Sunley
+  - Simmie?
+  - Carpenter
+  - Boschma 2015
+  - Schumpeter?
+  - Flere?
+
+- Martin and Sunley 2015: On the notion of regional economic resilience: conceptualization and explanation 
+
+- Hvorfor ikke bruge Sensitivity Index? Se cite:sensier_measuring_2016-1 og  cite:sensier_resilience_2016. 
+  
+Much like sustainability before it, the concept of economic resilience seems notoriously difficult to define and operationalize in concrete terms (cite cite cite). 
+
+--- bla bla on the different approaches, see Boschma
+- evolution approach: Simmie, Martin 2010: The economic resilience of regions: towards an
+evolutionary approach
+- evolution approach: Boschma 2015
+* Footnotes
+
+[fn:1] The algorithm was updated in 2018 from the 2012 version. While many of the most cited results is build from the original algorithm, the 2018-edition has several desirable properties, especially regarding more sparse matrices. I run the analysis with both algorithms and report the result in the appendix. TODO
+
+
+

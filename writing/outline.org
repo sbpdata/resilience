@@ -1,0 +1,88 @@
+#+TITLE: Outline
+#+AUTHOR: S B Post
+#+DATE: 2019
+#+Options: toc:2 H:4 num:4
+#+LATEX_HEADER: \usepackage{natbib}
+
+\newpage
+
+* Introduction
+- Why study resilience
+- Outline
+- Results
+- Briefly walk through context (Great Recession) and consequences (graphs)
+* Concepts and framework
+** Economic resilience
+- Fuzzy concept, different origins
+- Relevant approaches ('engineered', 'adaptive', 'evolutionary/Schumpeter')
+- Concept in this paper
+- Concrete operationalization of concept in this paper (three parts: severity of shock (amplitude + duration), length of recovery (duration), structural change.)
+
+** Economic shocks
+- Brief review of approaches to measuring shocks
+- Issues with operationalizing shocks in general, specifically with aggregate measurements. (When is a tremble an earthquake? Issues of finding the 'reference state'.)
+- Why choose business cycle approach, and not trade-flow/financial flows? (i.e. why an outcome based approach?) 
+- 'Modern business cycles' (trend shocks) vs 'classical business cycles' (absolute shocks), turning points and BBQ algorithm.
+- The 'double-issue' with using classical business cycles in relation to developing countries. ('growth cycles', 'hysteresis' and long run impacts, + examples in lit)
+** Network effects, economic structure, and resilience
+- Network topology is important for resilience of systems (graph theory, physical systems, social networks)
+- Theoretical evidence, empirical evidence, and common sense that this also applies to economic systems
+- Brief review of evidence.
+** Capabilities, complexity and the product space
+- Brief review of 'capability concept'
+- Introduction of the product space, and how this relates to the development of countries.
+- Why the is product space a valuable way of understanding economic structure.
+- Brief overview of fitness and complexity measurements of the economy-sophistication. (+ evidence on why fitness is a powerful indicator)
+- How does the fitness and product-network relate to each other, and how are they related to economic resilience (Distance to products vs sophistication of products - example of a fitness surface or monkeys in trees, capability diversity or overlap).
+** Framework
+- Brief summation of concepts and how they relate to each other
+- Clarify explanatory model, and tie concepts together to a framework with testable parts.
+- Main point: make it simple to follow how the framework makes sense, and how the ideas are meaningfully coupled together. This should tie directly into the tests laid out in under methods.
+* Data and methods
+** Data
+- International trade data
+- GDP data
+- (Consumption data, India)
+- (Employment data, India)
+- (Annual Survey of Industries, India)
+** Metrics
+*** Country-product and capability metrics
+ - RCA data: trade data
+ - Product-product similarity data: RCA data
+ - Country-product density data: RCA data, product-product similarity data
+ - Country industrial diversity: RCA data
+ - Country capability coherence: country-product density data, RCA data
+ - Country Fitness and Product Complexity: RCA data
+ - Identifying new products: RCA data
+*** Economy "reference state" metrics
+  - Real GDP data: raw (cleaned)
+  - (Employment data: raw (cleaned), India)
+  - (Consumption data: raw (cleaned), India)
+*** Shock metrics
+ Necessary inputs are after the colon.
+  - Binary time-series: reference state metric
+  - Depth of shock: reference state metric, binary time-series
+  - Length of downturn: reference state metric, binary time-series
+  - Recovery to pre-shock peak: reference state metric, binary time-series
+  - Newly introduced products in export basket in expansion period + their sophistication
+  - Newly introduced product in post-shock period + their sophistication
+** Tests
+*** Resilience
+- Multiple linear regression (MLR) models on shock metrics and "economic structure"-independent variables.
+*** Structural change post-shock
+- Monte Carlo permutation (MC) tests on difference in relatedness of new products (post-shock vs null-distribution)
+- MC tests on complexity of new products (post-shock vs null-distribution)
+- (Consideration of interaction effects of shock severity and structural change coefficients.)
+
+* Results
+* Analysis and discussion
+** Analysis
+** Contributions
+** Weaknesses
+- Potential bias in shock identification
+- Capabilities not the proper network measurement (IO tables, for instance)
+- GDP as reference state metric (misses a lot of important micro/meso-level impacts, subject to revisions).
+- Possibilities of non-linearity in relationship.
+- Attenuation bias because of imprecise proxies.
+** Further work
+* Conclusion

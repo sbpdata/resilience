@@ -1,0 +1,39 @@
+#+TITLE: Draft: Economic resilience
+#+AUTHOR: S B Post
+#+DATE: 2019
+#+Options: toc:2 H:4 num:4
+#+LATEX_HEADER: \setlength{\parskip}{1em} % set spaces between paragraphs to 1 character
+#+LATEX_HEADER: \setlength{\parindent}{0em} % set indents for new paragraphs to 0
+#+LATEX_HEADER: \usepackage{natbib}
+
+* Conceptualizing economic resilience 
+   - Fuzzy concept
+Much like sustainability was before it, resilience has become a notoriously fuzzy concept. For instance, one review found sixteen "overlapping conceptualisations" from the literature on social, ecological and socio-ecological systems citep:bahadur_resilience_2010. As noted by cite:simmie_regional_2014, this is possibly due to the different ontological approaches to concept (including evolutionary biology, economics, psychology, ecology). As such, it is helpful to clarify exactly what is meant by the resilience of an economy and how this paper operationalize the concept. 
+
+'Engineered resilience' refers to a 'bounce-back' resilience - how quick can an system return to its pre-shock state. In the context of economies, this was line of thinking was popularized by cite:friedman_monetary_1964,friedman_plucking_1993 as a string beneath a board. The board represents the 'output-ceiling' of the economy, and the string the economy's path. When the string is periodically "plucked", the economy dips down but returns quickly to the board. As such, the economy is though to have an equilibrium state to which it returns after shocks. 
+
+
+- Relevant approaches ('engineered', 'adaptive', 'evolutionary/Schumpeter')
+- Concept in this paper
+- Concrete operationalization of concept in this paper (three parts: severity of shock (amplitude + duration), length of recovery (duration), structural change.)
+
+*** Notes and literature
+ - *Fratesi U, Rodrìguez-Pose A (2016) The crisis and regional employment in Europe: What role for sheltered economies*: Most resilient economies were those that were more competitative before the crisis (oplagt at måle dette i forhold til complexity)
+ - *Martin et al (2016) cite:martin_how_2016*: "Further, while economic structure is found to have exerted some influence on the resistance and recoverability of certain regions, in general ‘region-specific’ or ‘competitiveness’ effects appear to have played an equally, if not more, significant role."
+ - *Di Caro 2015 on italian regions* - https://rsaiconnect-onlinelibrary-wiley-com.ludwig.lub.lu.se/doi/full/10.1111/pirs.12168, see especially second step.
+ - This is a review from 2011- https://nyu-staging.pure.elsevier.com/en/publications/economic-shocks-and-regional-economic-resilience
+ - Schumpetering thinking in resilience and economic geography:
+   - *Simmie 2014a: growth theory and resilience in UK cities: re-invention, replication, recession*
+ and recovery.
+   - Simmie 2014b: Regional economic resilience: a schumpeterian perspective cite:simmie_regional_2014 
+   - Ift Schump: viser Neffke et al at entrenapeurer står for structural change?
+   - Ift Schump: "accelerations of technological innovation during peridos of depression were the main drivers of recovery".
+   - Ift structuren af netværket som havebde betydning for shocks og økonomien: Acemoglu papers, Diodato paper.
+   - It is a well-known fact that the network topology of a system has an effect on the systems resilience... 
+
+     
+* References
+
+bibliographystyle:apalike
+bibliography:./referenced.bib
+

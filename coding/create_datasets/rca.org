@@ -1,0 +1,110 @@
+* Revealed comparative advantage
+    :PROPERTIES:
+    :header-args:R: :session rca :exports code :tangle ../scripts/rca.R :results silent
+    :END:
+
+ Economies differ by sizes of many magnitudes. For instance, the economy of the US is around 19 trillions USD in 2019. This is approximately 400 times the size of the economy of Ghana. To meaningfully compare which products different economies specialize in, some normalization procedure is necessary. For this I use the Revealed Comparative Advantage (also known as the Balassa Index). Originally introduced by cite:balassa_trade_1965.
+
+RCA compares the share of a products export value in a regions total export to the share of the products global export value in the total global exports. More formally:
+
+ $$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
+
+where $X_{cp}$ is the export value of product $p$ in country $c$ in a given year. If RCA is at 1 or above, a comparative advantage is considered revealed.
+
+*** Coding RCA
+As input data, I use a cleaned trade data set. The source can be found TODO, and the cleaning producedure can be found TODO. The trade data is in two formats, SITC rev. 2 (four digit) and TODO
+
+    #+begin_src R 
+      library(tidyverse)
+      library(vroom)
+      ## read data
+      path <- "~/sorensfolder/sbpdata/data/sitc-rev2_tidy.csv"
+      trade <- vroom(path) %>%
+        filter(time == 2010) %>%
+        select(-rca)
+    #+end_src
+
+ As written above, the definition of RCA is as follows: 
+
+ $$ RCA_{pc} = \frac{ X_{cp} }{ \sum_{p} X_{cp} } \bigg/ \frac{ \sum_{c} X_{cp} }{ \sum_{c} \sum_{p} X_{cp}} $$
+
+ First, I build a country-product matrix, where the elements are the export-value in constant dollars. This matrix is the $X$ matrix. Each element $x_{cp}$ is the intensity, i.e. the export value, of the country-product pair.
+
+    #+begin_src R 
+      mat <- spread(trade, key = unit, value = intensity) %>%
+        select(-time) %>%
+        column_to_rownames(var = "region") %>%
+        as.matrix()
+    #+end_src
+
+ I calculate RCA values in three steps. First I find the share of a products export value in a country's total exports (the numerator) for each product.
+
+ #+begin_src R
+   share_unit_region <- mat / rowSums(mat)
+ #+end_src
+
+ The ~rowSums~ sums the product export values for each country. This results in a vector with each country's total export value. This is then divided into the intensity matrix, element-wise. It is repeated column by column, meaning that each product is divided by respective country's total export. 
+
+ Second I find the share of each products export value in the total value of global exports (denominator).
+
+ #+begin_src R
+   share_unit_global <- colSums(mat) / sum(mat)
+ #+end_src
+
+ This is essentially the same procedure as before, but with the column sums (a vector containing the total value of a products exports over all countries) divided by a vector (global exports).
+
+ Finally, I perform the division. This is essentially that same idea as step one. I transpose the nominator-matrix in order for R to divide the vector global product shares element-wise one column at a time. Finally I transpose the result to get the country-product format for the RCA matrix.
+
+  #+begin_src R
+    incidence_mat <- t(
+        t(share_unit_region) / share_unit_global
+    )
+  #+end_src
+
+ For most of the calculations, the RCA matrix needs to be binary. 
+
+ #+begin_src R
+   binary_incidence_mat <- ifelse(incidence_mat >= 1, 1, 0)
+ #+end_src
+
+ The first 10 rows and 5 columns of the country-product RCA matrix, later defined as M is as follows:
+
+ #+begin_src R :exports both :results output
+   incidence_mat[1:10, 1:5]
+ #+end_src
+
+ #+RESULTS:
+ #+begin_example
+             0011        0012        0013         0014         0015
+ ago 3.050055e-05  0.00000000 0.000000000 0.0000000000 0.0000000000
+ alb 0.000000e+00  0.00000000 0.000000000 0.0000000000 0.0000000000
+ are 6.714986e-03  0.17528790 0.000000000 0.0036199581 3.1081353220
+ arg 4.465448e-02  0.03266859 0.000000000 0.1053968602 2.9301535236
+ aus 7.589987e+00 18.73346642 0.004396553 0.1722491720 3.6800952314
+ aut 1.336828e+00  0.12767172 0.293910495 0.8424285365 0.2569530733
+ aze 0.000000e+00  0.00000000 0.000000000 0.0000000000 0.0115261215
+ bel 7.385417e-01  0.02118707 1.642952207 0.7455334227 1.2711332964
+ bgd 0.000000e+00  0.00000000 0.000000000 0.0009123757 0.0004335134
+ bgr 1.532127e+00 11.48713041 0.009548073 2.4288072151 0.5214828390
+ #+end_example
+
+ And the corresponding binary matrix:
+
+ #+begin_src R :exports both :results output
+   binary_incidence_mat[1:10, 1:5]
+ #+end_src
+
+ #+RESULTS:
+ #+begin_example
+     0011 0012 0013 0014 0015
+ ago    0    0    0    0    0
+ alb    0    0    0    0    0
+ are    0    0    0    0    1
+ arg    0    0    0    0    1
+ aus    1    1    0    0    1
+ aut    1    0    0    0    0
+ aze    0    0    0    0    0
+ bel    0    0    1    0    1
+ bgd    0    0    0    0    0
+ bgr    1    1    0    1    0
+ #+end_example
